@@ -71,7 +71,8 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "select * from BlogYazisi ";
+                    string query = "select bly.Id,bly.Baslik,bly.Aciklama,bk.Ad[BlogKategori] from BlogYazisi bly "+
+                    "INNER JOIN BlogKategori bk on bly.KategoriBlogId = bk.Id where bly.Durum = 1 and bk.Durum = 1 ";
 
                     return new { state = "OK", content = conn.Query(query, new { }) };
                 }
