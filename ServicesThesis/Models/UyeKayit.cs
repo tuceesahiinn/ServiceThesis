@@ -16,7 +16,7 @@ namespace ServicesThesis.Models
         public string Eposta { get; set; }
         public string Sifre { get; set; }
         public int IlId { get; set; }
-    
+        public bool Durum { get; set; }   
 
     }
 }

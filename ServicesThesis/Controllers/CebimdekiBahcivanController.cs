@@ -54,6 +54,17 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Kullanıcı adı veya şifre hatalı. Tekrar deneyiniz." });
         }
         [HttpPost]
+        public IHttpActionResult HesabiPasifeAl([FromBody] UyeKayit uyeKayit)
+        {
+            string sonuc = CebimdekiBahcivanData.HesabiPasifeAl(uyeKayit);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Hesap başarılı bir şekilde pasife alındı." });
+
+            else
+                return Json(new { state = "NOK", content = "Hesap pasife alınırken bir hata meydana geldi. Lütfen tekrar deneyiniz." });
+        }
+        [HttpPost]
         public IHttpActionResult BilgilerimiGuncelle([FromBody] UyeKayit uyeKayit)
         {
             string sonuc = CebimdekiBahcivanData.BilgilerimiGuncelle(uyeKayit);
@@ -74,6 +85,58 @@ namespace ServicesThesis.Controllers
 
             else
                 return Json(new { state = "NOK", content = "Hesabınızı silerken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpGet]
+        public IHttpActionResult BitkiOnerileri(string Il) => Json(CebimdekiBahcivanData.BitkiOnerileri(Il));
+        [HttpPost]
+        public IHttpActionResult BitkiOnerisiEkle([FromBody] BitkiOnerisi bitkiOnerisi)
+        {
+          
+            string sonuc = CebimdekiBahcivanData.BitkiOnerisiEkle(bitkiOnerisi);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki önerisi başarılı bir şekilde eklendi." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki önerisi eklenirken bir hata meydana geldi. Lütfen tekrar deneyiniz." });
+            
+        }
+        [HttpPost]
+        public IHttpActionResult BitkiOnerisiSil([FromBody] BitkiOnerisi bitkiOnerisi)
+        {
+
+            string sonuc = CebimdekiBahcivanData.BitkiOnerisiSil(bitkiOnerisi);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki önerisi başarılı bir şekilde silindi." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki önerisi silinirken bir hata meydana geldi. Lütfen tekrar deneyiniz." });
+
+        }
+        [HttpPost]
+        public IHttpActionResult BitkiEkle([FromBody] Bitki bitki)
+        {
+
+            string sonuc = CebimdekiBahcivanData.BitkiEkle(bitki);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki başarılı bir şekilde eklendi." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki eklenirken bir hata meydana geldi. Lütfen tekrar deneyiniz." });
+
+        }
+        [HttpPost]
+        public IHttpActionResult BitkiBilgisiGuncelleme([FromBody] Bitki bitki)
+        {
+            string sonuc = CebimdekiBahcivanData.BitkiBilgisiGuncelleme(bitki);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki bilgileri başarılı bir şekilde güncellenmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki bilgileri güncellenirken bir hata meydana geldi. Tekrar deneyiniz." });
         }
     }
 }
