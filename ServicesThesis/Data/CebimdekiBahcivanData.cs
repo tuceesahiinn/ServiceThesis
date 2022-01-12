@@ -144,7 +144,8 @@ namespace ServicesThesis.Data
 
                     if (uyeListesi.Count >= 1)
                     {
-                
+                        string query = "Update Uye set GirisDurumu=1 where KullaniciAdi=@KullaniciAdi and Sifre=@Sifre ";
+                        conn.Execute(query, new { uyeKayit.KullaniciAdi, uyeKayit.Sifre });
 
                         return "OK";
                     }
@@ -154,6 +155,33 @@ namespace ServicesThesis.Data
                     }
 
           
+
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+
+            }
+        }
+        public static string CikisYap(UyeKayit uyeKayit)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "Update Uye set GirisDurumu=0 where KullaniciAdi=@KullaniciAdi ";
+                    conn.Execute(query, new { uyeKayit.KullaniciAdi });
+
+                    return "OK";
 
                 }
                 catch (Exception exp)
@@ -202,6 +230,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string query = @"Update Uye Set Ad=@Ad,Soyad=@Soyad,KullaniciAdi=@KullaniciAdi,Cinsiyet=@Cinsiyet,Telefon=@Telefon, " +
                     "Eposta=@Eposta,Sifre=@Sifre,IlId=@IlId ";
   
@@ -228,6 +257,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string kullaniciVarMi = "Select * from Uye where KullaniciAdi=@KullaniciAdi";
 
                     List<UyeKayit> uyeListesi = conn.Query<UyeKayit>(kullaniciVarMi, new { uyeKayit.KullaniciAdi }).ToList();
@@ -256,7 +286,7 @@ namespace ServicesThesis.Data
 
             }
         }
-        public static object BitkiOnerileri(string Il)
+        public static object BitkiOnerileri(BitkiOnerisi bitkiOnerisi)
         {
 
             string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
@@ -265,18 +295,20 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string query = "select bo.Id,b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad[KategoriAd],i.Il from BitkiOnerileri bo "+
                     "INNER JOIN Bitki b on b.Id = bo.BitkiId "+
                     "INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
                     "INNER JOIN Il i on i.Id = bo.IlId "+
                     "where b.Durum = 1 and bo.Durum = 1 and bk.Durum = 1 ";
                    
-                    if (!string.IsNullOrEmpty(Il) && Il != "null")
+                    if (!string.IsNullOrEmpty(bitkiOnerisi.Il) && bitkiOnerisi.Il != "null")
                     {
                         query += " AND i.Il = @Il ";
                     }
-                   
-                    return new { state = "OK", content = conn.Query(query, new { Il }) };
+
+
+                    return new { state = "OK", content = conn.Query(query, new {Il=bitkiOnerisi.Il }) };
                 }
                 catch (Exception exp)
                 {
@@ -296,6 +328,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string query = "INSERT INTO BitkiOnerileri (Id,BitkiId,IlId,Durum) " +
                     "VALUES((SELECT COUNT(ID) FROM BitkiOnerileri) + 1,(SELECT Id FROM Bitki b WHERE b.BitkiAd =@BitkiAd), " +
                     "(SELECT Id FROM Il WHERE Il =@Il),1)";
@@ -323,7 +356,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
-
+                    conn.Open();
                     string bitkiOnerisiVarMi = "Select * from BitkiOnerileri where Id=@Id";
 
                     List<BitkiOnerisi> oneriListesi = conn.Query<BitkiOnerisi>(bitkiOnerisiVarMi, new { bitkiOnerisi.Id }).ToList();
@@ -358,6 +391,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string query = "INSERT INTO Bitki (BitkiAd,BitkiAciklama,Fotograf,BitkiKategoriId,Durum) "+
                     "VALUES(@BitkiAd, @BitkiAciklama, NULL, (SELECT bk.Id FROM BitkiKategori bk WHERE bk.Ad = @BitkiKategoriAd),1)";
 
@@ -384,6 +418,7 @@ namespace ServicesThesis.Data
             {
                 try
                 {
+                    conn.Open();
                     string query = "UPDATE Bitki SET BitkiAd=@BitkiAd,BitkiAciklama=@BitkiAciklama,Fotograf=@Fotograf, "+
                     " BitkiKategoriId=(SELECT bk.Id FROM BitkiKategori bk WHERE bk.Ad = @BitkiKategoriAd),Durum=1 WHERE Id=@Id";
 
@@ -395,6 +430,60 @@ namespace ServicesThesis.Data
                 catch (Exception exp)
                 {
                     return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BitkiSil(Bitki bitki)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "Delete Bitki where Id=@Id";
+
+
+                    conn.Execute(query, bitki);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static object BitkiArama(Bitki bitki)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select * from Bitki where Durum=1 ";
+
+                    if (!string.IsNullOrEmpty(bitki.BitkiAd) && bitki.BitkiAd != "null")
+                    {
+                        query += " AND BitkiAd like '%'+ @BitkiAd +'%' ";
+                    }
+
+                    return new { state = "OK", content = conn.Query(query, new { BitkiAd = bitki.BitkiAd }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
                 }
                 finally
                 {

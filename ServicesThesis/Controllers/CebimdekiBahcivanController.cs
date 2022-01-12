@@ -54,6 +54,17 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Kullanıcı adı veya şifre hatalı. Tekrar deneyiniz." });
         }
         [HttpPost]
+        public IHttpActionResult CikisYap([FromBody] UyeKayit uyeKayit)
+        {
+            string sonuc = CebimdekiBahcivanData.CikisYap(uyeKayit);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Sistemden çıkış başarılı." });
+
+            else
+                return Json(new { state = "NOK", content = "Sistemden çıkış yapılırken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
         public IHttpActionResult HesabiPasifeAl([FromBody] UyeKayit uyeKayit)
         {
             string sonuc = CebimdekiBahcivanData.HesabiPasifeAl(uyeKayit);
@@ -87,7 +98,12 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Hesabınızı silerken bir hata meydana geldi. Tekrar deneyiniz." });
         }
         [HttpGet]
-        public IHttpActionResult BitkiOnerileri(string Il) => Json(CebimdekiBahcivanData.BitkiOnerileri(Il));
+        public IHttpActionResult BitkiOnerileri([FromBody] BitkiOnerisi bitkiOnerisi)
+        {
+
+            return Json(CebimdekiBahcivanData.BitkiOnerileri(bitkiOnerisi));
+
+        }
         [HttpPost]
         public IHttpActionResult BitkiOnerisiEkle([FromBody] BitkiOnerisi bitkiOnerisi)
         {
@@ -137,6 +153,22 @@ namespace ServicesThesis.Controllers
 
             else
                 return Json(new { state = "NOK", content = "Bitki bilgileri güncellenirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
+        public IHttpActionResult BitkiSil([FromBody] Bitki bitki)
+        {
+            string sonuc = CebimdekiBahcivanData.BitkiSil(bitki);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki bilgileri başarılı bir şekilde silindi." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki bilgileri silinirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpGet]
+        public IHttpActionResult BitkiArama([FromBody] Bitki bitki)
+        {
+            return Json(CebimdekiBahcivanData.BitkiArama(bitki));
         }
     }
 }
