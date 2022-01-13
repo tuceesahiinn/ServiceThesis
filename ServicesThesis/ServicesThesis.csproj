@@ -218,8 +218,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BenimBahcem.cs" />
     <Compile Include="Models\Bitki.cs" />
     <Compile Include="Models\BitkiOnerisi.cs" />
+    <Compile Include="Models\BlogYazisi.cs" />
     <Compile Include="Models\UyeKayit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

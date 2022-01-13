@@ -170,5 +170,92 @@ namespace ServicesThesis.Controllers
         {
             return Json(CebimdekiBahcivanData.BitkiArama(bitki));
         }
+        [HttpPost]
+        public IHttpActionResult BitkiyiFavorilereEkleme([FromBody] Bitki bitki)
+        {
+            string sonuc = CebimdekiBahcivanData.BitkiyiFavorilereEkleme(bitki);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki başarılı bir şekilde favorilere eklenmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki favorilere eklenirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpGet]
+        public IHttpActionResult FavorilereEklenenBitkiyiGörüntüleme([FromBody] Bitki bitki)
+        {
+            return Json(CebimdekiBahcivanData.FavorilereEklenenBitkiyiGörüntüleme(bitki));
+        }
+        [HttpPost]
+        public IHttpActionResult BitkiyiFavorilerdenSilme([FromBody] Bitki bitki)
+        {
+            string sonuc = CebimdekiBahcivanData.BitkiyiFavorilerdenSilme(bitki);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Bitki başarılı bir şekilde favorilerden silinmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki favorilerden silinirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
+        public IHttpActionResult BlogYazisiniFavorilereEkleme([FromBody] BlogYazisi blogYazisi)
+        {
+            string sonuc = CebimdekiBahcivanData.BlogYazisiniFavorilereEkleme(blogYazisi);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Blog yazısı başarılı bir şekilde favorilere eklenmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Blog yazısı favorilere eklenirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpGet]
+        public IHttpActionResult FavorilereEklenenBlogYazisiniGörüntüleme([FromBody] BlogYazisi blogYazisii)
+        {
+            return Json(CebimdekiBahcivanData.FavorilereEklenenBlogYazisiniGörüntüleme(blogYazisii));
+        }
+        [HttpPost]
+        public IHttpActionResult BlogYazisiniFavorilerdenSilme([FromBody] BlogYazisi blogYazisii)
+        {
+            string sonuc = CebimdekiBahcivanData.BlogYazisiniFavorilerdenSilme(blogYazisii);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Blog yazısı başarılı bir şekilde favorilerden silinmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Blog yazısı favorilerden silinirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
+        public IHttpActionResult BenimBahcemeBitkiEkleme([FromBody] BenimBahcem benimBahcem)
+        {
+            string sonuc = CebimdekiBahcivanData.BenimBahcemeBitkiEkleme(benimBahcem);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Benim bahçeme bitki başarılı bir şekilde eklenmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki benim bahçeme eklenirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
+        public IHttpActionResult BenimBahcemdenBitkiSilme([FromBody] BenimBahcem benimBahcem)
+        {
+            string sonuc = CebimdekiBahcivanData.BenimBahcemdenBitkiSilme(benimBahcem);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Benim bahçemden bitki başarılı bir şekilde silinmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bitki benim bahçemden bitki silinirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpPost]
+        public IHttpActionResult BenimBahcemdenBitkiNotuGuncelleme([FromBody] BenimBahcem benimBahcem)
+        {
+            string sonuc = CebimdekiBahcivanData.BenimBahcemdenBitkiNotuGuncelleme(benimBahcem);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Benim bahçemdeki bitki notu başarılı bir şekilde güncellenmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Benim bahçemdeki bitki notu güncellenirken bir hata meydana geldi. Tekrar deneyiniz." });
+        }
     }
 }

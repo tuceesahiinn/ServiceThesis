@@ -491,6 +491,254 @@ namespace ServicesThesis.Data
                 }
             }
         }
+        public static string BitkiyiFavorilereEkleme(Bitki bitki)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "INSERT INTO FavorilereEklenenBitki (BitkiId,UyeId) "+
+                    "VALUES((SELECT Id FROM Bitki WHERE BitkiAd = @BitkiAd and Durum = 1), "+
+                    "(SELECT Id from Uye where KullaniciAdi = @KullaniciAdi and Durum = 1 ))";
+
+
+                    conn.Execute(query, bitki);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static object FavorilereEklenenBitkiyiGörüntüleme(Bitki bitki)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad from FavorilereEklenenBitki feb "+
+                    "INNER JOIN Bitki b on b.Id = feb.BitkiId "+
+                    "INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
+                    "where feb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi ) and b.Durum = 1 and bk.Durum = 1";
+
+
+
+                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = bitki.KullaniciAdi }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BitkiyiFavorilerdenSilme(Bitki bitki)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "Delete FavorilereEklenenBitki where UyeId=(select Id from Uye where KullaniciAdi=@KullaniciAdi )"+
+                    " AND BitkiId=(select Id from Bitki where BitkiAd=@BitkiAd)";
+
+
+                    conn.Execute(query, bitki);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BlogYazisiniFavorilereEkleme(BlogYazisi blogYazisi)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "INSERT INTO FavorilereEklenenBlogYazi (BlogYazisiId,UyeId) " +
+                    "VALUES((SELECT Id FROM BlogYazisi WHERE Baslik = @Baslik and Durum = 1), " +
+                    " (SELECT Id from Uye where KullaniciAdi = @KullaniciAdi and Durum = 1 ))";
+
+
+                    conn.Execute(query, blogYazisi);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static object FavorilereEklenenBlogYazisiniGörüntüleme(BlogYazisi blogYazisi)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select bly.Baslik,bly.Aciklama,bk.Ad from FavorilereEklenenBlogYazi feby "+
+                    " INNER JOIN BlogYazisi bly on feby.BlogYazisiId = bly.Id "+
+                    " INNER JOIN BlogKategori bk on bk.Id = bly.KategoriBlogId "+
+                    " where feby.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi ) and bly.Durum = 1 and bk.Durum = 1";
+
+
+
+                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = blogYazisi.KullaniciAdi }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BlogYazisiniFavorilerdenSilme(BlogYazisi blogYazisi)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "Delete FavorilereEklenenBlogYazi where UyeId=(select Id from Uye where KullaniciAdi=@KullaniciAdi )" +
+                    " AND BlogYazisiId=(select Id from BlogYazisi where Baslik=@Baslik)";
+
+
+                    conn.Execute(query, blogYazisi);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BenimBahcemeBitkiEkleme(BenimBahcem benimBahcem)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "INSERT INTO BenimBahcem (BitkiId,Durum,Notlar,UyeId) "+
+                    "VALUES((SELECT Id  FROM Bitki WHERE BitkiAd = @BitkiAd),1,@Notlar, "+
+                    "(select Id from Uye where KullaniciAdi = @KullaniciAdi))";
+
+
+                    conn.Execute(query, benimBahcem);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BenimBahcemdenBitkiSilme(BenimBahcem benimBahcem)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "delete BenimBahcem where BitkiId=(select Id from Bitki where BitkiAd=@BitkiAd) "+
+                    " and UyeId=(select Id from Uye where KullaniciAdi=@KullaniciAdi) ";
+
+
+                    conn.Execute(query, benimBahcem);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string BenimBahcemdenBitkiNotuGuncelleme(BenimBahcem benimBahcem)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "Update BenimBahcem set Notlar=@Notlar where BitkiId=(select Id from Bitki where BitkiAd=@BitkiAd) "+
+                    "and UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi)  ";
+
+
+                    conn.Execute(query, benimBahcem);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
     }
    
 

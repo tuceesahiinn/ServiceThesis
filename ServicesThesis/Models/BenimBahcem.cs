@@ -5,16 +5,13 @@ using System.Web;
 
 namespace ServicesThesis.Models
 {
-    public class Bitki
+    public class BenimBahcem
     {
         public int Id { get; set; }
+        public int BitkiId { get; set; }
         public string BitkiAd { get; set; }
-        public string BitkiAciklama { get; set; }
-        public string Fotograf { get; set; }
-        public string BitkiKategoriAd { get; set; }
-        public int BitkiKategoriId { get; set; }
         public bool Durum { get; set; }
+        public string Notlar { get; set; }
         public string KullaniciAdi { get; set; }
-
     }
 }
