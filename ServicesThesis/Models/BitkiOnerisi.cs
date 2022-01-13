@@ -9,6 +9,7 @@ namespace ServicesThesis.Models
     {
         public int Id { get; set; }
         public string BitkiAd { get; set; }
+        public string KullaniciAdi { get; set; }
         public string Il { get; set; }
     }
 }

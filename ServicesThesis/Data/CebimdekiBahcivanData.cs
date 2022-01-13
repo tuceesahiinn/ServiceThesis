@@ -297,18 +297,17 @@ namespace ServicesThesis.Data
                 {
                     conn.Open();
                     string query = "select bo.Id,b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad[KategoriAd],i.Il from BitkiOnerileri bo "+
-                    "INNER JOIN Bitki b on b.Id = bo.BitkiId "+
-                    "INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
-                    "INNER JOIN Il i on i.Id = bo.IlId "+
-                    "where b.Durum = 1 and bo.Durum = 1 and bk.Durum = 1 ";
-                   
-                    if (!string.IsNullOrEmpty(bitkiOnerisi.Il) && bitkiOnerisi.Il != "null")
-                    {
-                        query += " AND i.Il = @Il ";
-                    }
+                    " INNER JOIN Bitki b on b.Id = bo.BitkiId "+
+                    " INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
+                    " INNER JOIN Il i on i.Id = bo.IlId "+
+                    " where b.Durum = 1 and bo.Durum = 1 and bk.Durum = 1 "+
+                    " AND i.Id = (select IlId from Uye where KullaniciAdi = @KullaniciAdi)";
 
 
-                    return new { state = "OK", content = conn.Query(query, new {Il=bitkiOnerisi.Il }) };
+                    
+
+
+                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = bitkiOnerisi.KullaniciAdi }) };
                 }
                 catch (Exception exp)
                 {
