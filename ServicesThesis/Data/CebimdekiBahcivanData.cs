@@ -471,11 +471,12 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "select * from Bitki where Durum=1 ";
+                    string query = "select b.BitkiAd,b.BitkiAciklama,bk.Ad from bitki b "+
+                    "INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId ";
 
                     if (!string.IsNullOrEmpty(bitki.BitkiAd) && bitki.BitkiAd != "null")
                     {
-                        query += " AND BitkiAd like '%'+ @BitkiAd +'%' ";
+                        query += " AND b.BitkiAd like '%'+ @BitkiAd +'%' ";
                     }
 
                     return new { state = "OK", content = conn.Query(query, new { BitkiAd = bitki.BitkiAd }) };
@@ -731,6 +732,31 @@ namespace ServicesThesis.Data
                 catch (Exception exp)
                 {
                     return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static object BitkiListele()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select b.Id,b.BitkiAd,b.BitkiAciklama,bk.Ad from Bitki b "+
+                    " INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId where b.Durum = 1 and bk.Durum = 1 ";
+
+
+                    return new { state = "OK", content = conn.Query(query, new { }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
                 }
                 finally
                 {

@@ -257,5 +257,10 @@ namespace ServicesThesis.Controllers
             else
                 return Json(new { state = "NOK", content = "Benim bahçemdeki bitki notu güncellenirken bir hata meydana geldi. Tekrar deneyiniz." });
         }
+        [HttpGet]
+        public IHttpActionResult BitkiListele()
+        {
+            return Json(CebimdekiBahcivanData.BitkiListele());
+        }
     }
 }
