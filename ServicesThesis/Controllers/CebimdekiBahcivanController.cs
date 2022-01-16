@@ -262,5 +262,15 @@ namespace ServicesThesis.Controllers
         {
             return Json(CebimdekiBahcivanData.BitkiListele());
         }
+        [HttpGet]
+        public IHttpActionResult KategoriListele()
+        {
+            return Json(CebimdekiBahcivanData.KategoriListele());
+        }
+        [HttpGet]
+        public IHttpActionResult BenimBahcemBitkiListele(BenimBahcem benimBahcem)
+        {
+            return Json(CebimdekiBahcivanData.BenimBahcemBitkiListele(benimBahcem));
+        }
     }
 }

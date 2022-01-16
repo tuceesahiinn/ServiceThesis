@@ -666,6 +666,19 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
+
+                    string bitkiVarMi = "Select * from Bitki where BitkiAd=@BitkiAd ";
+
+                    List<BenimBahcem> bitkiListesi = conn.Query<BenimBahcem>(bitkiVarMi, new { benimBahcem.BitkiAd }).ToList();
+
+                    if (bitkiListesi.Count == 0)
+                    {
+                        conn.Execute("INSERT INTO Bitki (BitkiAd,BitkiKategoriId,Durum,Fotograf) VALUES (@BitkiAd,(Select Id from BitkiKategori where Ad=@BitkiKategoriAd),1,NULL )", new { benimBahcem.BitkiAd,benimBahcem.BitkiKategoriAd });
+
+                    }
+                    
+
+                       
                     string query = "INSERT INTO BenimBahcem (BitkiId,Durum,Notlar,UyeId) "+
                     "VALUES((SELECT Id  FROM Bitki WHERE BitkiAd = @BitkiAd),1,@Notlar, "+
                     "(select Id from Uye where KullaniciAdi = @KullaniciAdi))";
@@ -748,7 +761,7 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "select b.Id,b.BitkiAd,b.BitkiAciklama,bk.Ad from Bitki b "+
+                    string query = "select b.Id,b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad from Bitki b "+
                     " INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId where b.Durum = 1 and bk.Durum = 1 ";
 
 
@@ -764,7 +777,58 @@ namespace ServicesThesis.Data
                 }
             }
         }
+        public static object KategoriListele()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select bk.Ad from  BitkiKategori bk ";
+
+
+                    return new { state = "OK", content = conn.Query(query, new { }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public static object BenimBahcemBitkiListele(BenimBahcem benimBahcem)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select b.BitkiAd,bb.Notlar from BenimBahcem bb "+
+                    "INNER JOIN Bitki b on b.Id = bb.BitkiId where bb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi) ";
+
+
+                    return new { state = "OK", content = conn.Query(query, new {benimBahcem.KullaniciAdi }) };
+                }
+                catch (Exception exp)
+                {
+                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
     }
+
    
 
     internal class NewClass

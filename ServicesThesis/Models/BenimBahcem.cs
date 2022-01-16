@@ -10,6 +10,7 @@ namespace ServicesThesis.Models
         public int Id { get; set; }
         public int BitkiId { get; set; }
         public string BitkiAd { get; set; }
+        public string BitkiKategoriAd { get; set; }
         public bool Durum { get; set; }
         public string Notlar { get; set; }
         public string KullaniciAdi { get; set; }
