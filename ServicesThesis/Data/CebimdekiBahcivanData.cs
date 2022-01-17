@@ -879,6 +879,32 @@ namespace ServicesThesis.Data
                 }
             }
         }
+        public static List<UyeKayit> KullaniciBilgileriGetir(UyeKayit uyeKayit1)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                List<UyeKayit> uyeListesi = new List<UyeKayit>();
+                try
+                {
+                    conn.Open();
+                    string query = "select u.Ad,u.Soyad,u.Telefon,u.Eposta,u.Sifre,u.IlId from Uye u where u.KullaniciAdi=@KullaniciAdi ";
+
+                    uyeListesi = conn.Query<UyeKayit>(query, uyeKayit1).ToList();
+
+                    return uyeListesi;
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception("Uye bilgileri listelenirken bir hata meydana geldi.");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
     }
 
    

@@ -320,5 +320,18 @@ namespace ServicesThesis.Controllers
         {
             return Json(CebimdekiBahcivanData.SonKullaniciGetir());
         }
+        [HttpGet]
+        public IHttpActionResult KullaniciBilgileriGetir([FromUri] UyeKayit uyeKayit)
+        {
+            List<UyeKayit> uyeListesi = CebimdekiBahcivanData.KullaniciBilgileriGetir(uyeKayit);
+            if (uyeListesi.Count != 0)
+            {
+                return Json(new { state = "OK", content = uyeListesi });
+            }
+            else
+            {
+                return Json(new { state = "NOK", content = "Uye bilgileri listelenirken bir hata meydana geldi." });
+            }
+        }
     }
 }
