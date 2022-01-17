@@ -286,32 +286,31 @@ namespace ServicesThesis.Data
 
             }
         }
-        public static object BitkiOnerileri(BitkiOnerisi bitkiOnerisi)
+        public static List<BitkiOnerisi> BitkiOnerileri(BitkiOnerisi bitkiOnerisi1)
         {
 
             string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                List<BitkiOnerisi> bitkiOneriListesi = new List<BitkiOnerisi>();
                 try
                 {
                     conn.Open();
-                    string query = "select bo.Id,b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad[KategoriAd],i.Il from BitkiOnerileri bo "+
-                    " INNER JOIN Bitki b on b.Id = bo.BitkiId "+
-                    " INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
-                    " INNER JOIN Il i on i.Id = bo.IlId "+
+                    string query = "select bo.Id,b.BitkiAd,b.BitkiAciklama,b.Fotograf,bk.Ad,i.Il from BitkiOnerileri bo " +
+                    " INNER JOIN Bitki b on b.Id = bo.BitkiId " +
+                    " INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId " +
+                    " INNER JOIN Il i on i.Id = bo.IlId " +
                     " where b.Durum = 1 and bo.Durum = 1 and bk.Durum = 1 "+
-                    " AND i.Id = (select IlId from Uye where KullaniciAdi = @KullaniciAdi)";
+                     " AND i.Id = (select IlId from Uye where KullaniciAdi = @KullaniciAdi)";
+                    bitkiOneriListesi = conn.Query<BitkiOnerisi>(query, bitkiOnerisi1).ToList();
 
 
-                    
-
-
-                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = bitkiOnerisi.KullaniciAdi }) };
+                    return bitkiOneriListesi;
                 }
                 catch (Exception exp)
                 {
-                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                    throw new Exception("Bitki önerileri listelenirken bir hata meydana geldi.");
                 }
                 finally
                 {
@@ -519,12 +518,13 @@ namespace ServicesThesis.Data
                 }
             }
         }
-        public static object FavorilereEklenenBitkiyiGörüntüleme(Bitki bitki)
+        public static List<Bitki> FavorilereEklenenBitkiyiGoruntuleme(Bitki bitki1)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                List<Bitki> favorilereEklenenBitkiListesi = new List<Bitki>();
                 try
                 {
                     conn.Open();
@@ -533,13 +533,13 @@ namespace ServicesThesis.Data
                     "INNER JOIN BitkiKategori bk on bk.Id = b.BitkiKategoriId "+
                     "where feb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi ) and b.Durum = 1 and bk.Durum = 1";
 
+                    favorilereEklenenBitkiListesi = conn.Query<Bitki>(query, bitki1).ToList();
 
-
-                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = bitki.KullaniciAdi }) };
+                    return favorilereEklenenBitkiListesi;
                 }
                 catch (Exception exp)
                 {
-                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                    throw new Exception("Favorilere eklenen bitkiler listelenirken bir hata meydana geldi.");
                 }
                 finally
                 {
@@ -602,12 +602,13 @@ namespace ServicesThesis.Data
                 }
             }
         }
-        public static object FavorilereEklenenBlogYazisiniGörüntüleme(BlogYazisi blogYazisi)
+        public static List<BlogYazisi> FavorilereEklenenBlogYazisiniGoruntuleme(BlogYazisi blogYazisi1)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                List<BlogYazisi> blogYazisiListesi = new List<BlogYazisi>();
                 try
                 {
                     conn.Open();
@@ -616,13 +617,13 @@ namespace ServicesThesis.Data
                     " INNER JOIN BlogKategori bk on bk.Id = bly.KategoriBlogId "+
                     " where feby.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi ) and bly.Durum = 1 and bk.Durum = 1";
 
+                    blogYazisiListesi = conn.Query<BlogYazisi>(query, blogYazisi1).ToList();
 
-
-                    return new { state = "OK", content = conn.Query(query, new { KullaniciAdi = blogYazisi.KullaniciAdi }) };
+                    return blogYazisiListesi;
                 }
                 catch (Exception exp)
                 {
-                    return new { state = "NOK", content = $"Sistem Hatası!!!<br />Hata Mesajı: {exp.Message}<br />Ayrıntılar: {exp.StackTrace}" };
+                    throw new Exception("Favorilere eklenen blog yazıları listelenirken bir hata meydana geldi.");
                 }
                 finally
                 {
@@ -802,7 +803,33 @@ namespace ServicesThesis.Data
             }
         }
 
-        public static object BenimBahcemBitkiListele(BenimBahcem benimBahcem)
+        public static List<BenimBahcem> BenimBahcemBitkiListele(BenimBahcem benimBahcem1)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                List<BenimBahcem> benimBahcemListesi = new List<BenimBahcem>();
+                try
+                {
+                    conn.Open();
+                    string query = "select b.BitkiAd,bb.Notlar from BenimBahcem bb "+
+                    "INNER JOIN Bitki b on b.Id = bb.BitkiId where bb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi) ";
+                    benimBahcemListesi = conn.Query<BenimBahcem>(query, benimBahcem1).ToList();
+
+                    return benimBahcemListesi;
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception("Benim bahçem bitkileri listelenirken bir hata meydana geldi.");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static string SonKullaniciEkle(UyeKayit uyeKayit)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
 
@@ -811,11 +838,36 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "select b.BitkiAd,bb.Notlar from BenimBahcem bb "+
-                    "INNER JOIN Bitki b on b.Id = bb.BitkiId where bb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi) ";
+
+                    string query = "INSERT INTO VeritabaniLoglari (KullaniciAdi) VALUES (@KullaniciAdi) ";
+
+                    conn.Execute(query, uyeKayit);
+
+                    return "OK";
+                }
+                catch (Exception exp)
+                {
+                    return exp.Message;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+        public static object SonKullaniciGetir()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["Connection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "select TOP 1 KullaniciAdi from  VeritabaniLoglari  order by Id DESC ";
 
 
-                    return new { state = "OK", content = conn.Query(query, new {benimBahcem.KullaniciAdi }) };
+                    return new { state = "OK", content = conn.Query(query, new { }) };
                 }
                 catch (Exception exp)
                 {

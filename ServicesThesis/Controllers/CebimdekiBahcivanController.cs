@@ -98,10 +98,18 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Hesabınızı silerken bir hata meydana geldi. Tekrar deneyiniz." });
         }
         [HttpGet]
-        public IHttpActionResult BitkiOnerileri([FromBody] BitkiOnerisi bitkiOnerisi)
+        public IHttpActionResult BitkiOnerileri([FromUri] BitkiOnerisi bitkiOnerisi)
         {
-
-            return Json(CebimdekiBahcivanData.BitkiOnerileri(bitkiOnerisi));
+            List<BitkiOnerisi> bitkiOneriListesi = CebimdekiBahcivanData.BitkiOnerileri(bitkiOnerisi);
+            if(bitkiOneriListesi.Count != 0)
+            {
+                return Json(new { state = "OK", content = bitkiOneriListesi });
+            }
+            else
+            {
+                return Json(new { state = "NOK", content = "Bitki önerileri getirilirken bir hata meydana geldi." });
+            }
+            
 
         }
         [HttpPost]
@@ -182,9 +190,17 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Bitki favorilere eklenirken bir hata meydana geldi. Tekrar deneyiniz." });
         }
         [HttpGet]
-        public IHttpActionResult FavorilereEklenenBitkiyiGörüntüleme([FromBody] Bitki bitki)
+        public IHttpActionResult FavorilereEklenenBitkiyiGoruntuleme([FromUri] Bitki bitki)
         {
-            return Json(CebimdekiBahcivanData.FavorilereEklenenBitkiyiGörüntüleme(bitki));
+            List<Bitki> favorilereEklenenBitkiListesi= CebimdekiBahcivanData.FavorilereEklenenBitkiyiGoruntuleme(bitki);
+            if (favorilereEklenenBitkiListesi.Count != 0)
+            {
+                return Json(new { state = "OK", content = favorilereEklenenBitkiListesi });
+            }
+            else
+            {
+                return Json(new { state = "NOK", content = "Favorilere eklenen bitkiler listelenirken bir hata meydana geldi." });
+            }
         }
         [HttpPost]
         public IHttpActionResult BitkiyiFavorilerdenSilme([FromBody] Bitki bitki)
@@ -209,9 +225,17 @@ namespace ServicesThesis.Controllers
                 return Json(new { state = "NOK", content = "Blog yazısı favorilere eklenirken bir hata meydana geldi. Tekrar deneyiniz." });
         }
         [HttpGet]
-        public IHttpActionResult FavorilereEklenenBlogYazisiniGörüntüleme([FromBody] BlogYazisi blogYazisii)
+        public IHttpActionResult FavorilereEklenenBlogYazisiniGoruntuleme([FromUri] BlogYazisi blogYazisi)
         {
-            return Json(CebimdekiBahcivanData.FavorilereEklenenBlogYazisiniGörüntüleme(blogYazisii));
+            List<BlogYazisi> favorilereEklenenBlogYazisiListesi = CebimdekiBahcivanData.FavorilereEklenenBlogYazisiniGoruntuleme(blogYazisi);
+            if (favorilereEklenenBlogYazisiListesi.Count != 0)
+            {
+                return Json(new { state = "OK", content = favorilereEklenenBlogYazisiListesi });
+            }
+            else
+            {
+                return Json(new { state = "NOK", content = "Favorilere eklenen blog yazıları listelenirken bir hata meydana geldi." });
+            }
         }
         [HttpPost]
         public IHttpActionResult BlogYazisiniFavorilerdenSilme([FromBody] BlogYazisi blogYazisii)
@@ -268,9 +292,33 @@ namespace ServicesThesis.Controllers
             return Json(CebimdekiBahcivanData.KategoriListele());
         }
         [HttpGet]
-        public IHttpActionResult BenimBahcemBitkiListele(BenimBahcem benimBahcem)
+        public IHttpActionResult BenimBahcemBitkiListele([FromUri] BenimBahcem benimBahcem)
         {
-            return Json(CebimdekiBahcivanData.BenimBahcemBitkiListele(benimBahcem));
+            List<BenimBahcem> benimBahcemListesi = CebimdekiBahcivanData.BenimBahcemBitkiListele(benimBahcem);
+            if (benimBahcemListesi.Count != 0)
+            {
+                return Json(new { state = "OK", content = benimBahcemListesi });
+            }
+            else
+            {
+                return Json(new { state = "NOK", content = "Benim bahçem bitkileri listelenirken bir hata meydana geldi." });
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult SonKullaniciEkle([FromBody] UyeKayit uyeKayit)
+        {
+            string sonuc = CebimdekiBahcivanData.SonKullaniciEkle(uyeKayit);
+
+            if (sonuc == "OK")
+                return Json(new { state = "OK", content = "Son kullanıcı başarılı bir şekilde getirilmiştir." });
+
+            else
+                return Json(new { state = "NOK", content = "Bir hata meydana geldi. Tekrar deneyiniz." });
+        }
+        [HttpGet]
+        public IHttpActionResult SonKullaniciGetir()
+        {
+            return Json(CebimdekiBahcivanData.SonKullaniciGetir());
         }
     }
 }
