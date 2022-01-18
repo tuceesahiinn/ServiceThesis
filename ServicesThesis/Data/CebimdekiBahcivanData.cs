@@ -231,8 +231,7 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = @"Update Uye Set Ad=@Ad,Soyad=@Soyad,KullaniciAdi=@KullaniciAdi,Cinsiyet=@Cinsiyet,Telefon=@Telefon, " +
-                    "Eposta=@Eposta,Sifre=@Sifre,IlId=@IlId ";
+                    string query = @"Update Uye Set Sifre=@Sifre,IlId=@IlId where KullaniciAdi=@KullaniciAdi ";
   
                     conn.Execute(query, uyeKayit);
 
@@ -695,7 +694,7 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "delete BenimBahcem where BitkiId=(select Id from Bitki where BitkiAd=@BitkiAd) "+
+                    string query = "delete BenimBahcem where BitkiAd=@BitkiAd "+
                     " and UyeId=(select Id from Uye where KullaniciAdi=@KullaniciAdi) ";
 
 
@@ -722,7 +721,7 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "Update BenimBahcem set Notlar=@Notlar where BitkiId=(select Id from Bitki where BitkiAd=@BitkiAd) "+
+                    string query = "Update BenimBahcem set Notlar=@Notlar where BitkiAd=@BitkiAd  "+
                     "and UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi)  ";
 
 
@@ -800,8 +799,8 @@ namespace ServicesThesis.Data
                 try
                 {
                     conn.Open();
-                    string query = "select b.BitkiAd,bb.Notlar from BenimBahcem bb "+
-                    "INNER JOIN Bitki b on b.Id = bb.BitkiId where bb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi) ";
+                    string query = "select bb.BitkiAd,bb.Notlar from BenimBahcem bb "+
+                    " where bb.UyeId = (select Id from Uye where KullaniciAdi = @KullaniciAdi) ";
                     benimBahcemListesi = conn.Query<BenimBahcem>(query, benimBahcem1).ToList();
 
                     return benimBahcemListesi;
