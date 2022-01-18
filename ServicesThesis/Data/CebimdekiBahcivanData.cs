@@ -666,23 +666,10 @@ namespace ServicesThesis.Data
             {
                 try
                 {
-                    conn.Open();
-
-                    string bitkiVarMi = "Select * from Bitki where BitkiAd=@BitkiAd ";
-
-                    List<BenimBahcem> bitkiListesi = conn.Query<BenimBahcem>(bitkiVarMi, new { benimBahcem.BitkiAd }).ToList();
-
-                    if (bitkiListesi.Count == 0)
-                    {
-                        conn.Execute("INSERT INTO Bitki (BitkiAd,BitkiKategoriId,Durum,Fotograf) VALUES (@BitkiAd,(Select Id from BitkiKategori where Ad=@BitkiKategoriAd),1,NULL )", new { benimBahcem.BitkiAd,benimBahcem.BitkiKategoriAd });
-
-                    }
-                    
-
+                    conn.Open();     
                        
-                    string query = "INSERT INTO BenimBahcem (BitkiId,Durum,Notlar,UyeId) "+
-                    "VALUES((SELECT Id  FROM Bitki WHERE BitkiAd = @BitkiAd),1,@Notlar, "+
-                    "(select Id from Uye where KullaniciAdi = @KullaniciAdi))";
+                    string query = "INSERT INTO BenimBahcem (BitkiAd,Notlar,UyeId) "+
+                    "VALUES(@BitkiAd,@Notlar,(select Id from Uye where KullaniciAdi = @KullaniciAdi))";
 
 
                     conn.Execute(query, benimBahcem);
